@@ -492,7 +492,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         actionId: crypto.randomUUID(),
         actionType,
       },
-      (res) => {
+      (res: any) => {
         if (res && !res.ok) {
           set({ bannerError: res.error?.message ?? 'Action rejected.' });
         }
