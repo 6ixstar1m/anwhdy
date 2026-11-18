@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(cuid())
+  username     String       @unique
+  email        String?      @unique
+  passwordHash String?
+  avatarConfig Json
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  stats        PlayerStats?
+  hostedRooms  Room[]       @relation("HostedRooms")
+  wonGames     GameHistory[] @relation("WonGames")
+
+  @@index([username])
+}
+
+model PlayerStats {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  matchesPlayed Int      @default(0)
+  matchesWon    Int      @default(0)
+  matchesLost   Int      @default(0)
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Room {
+  id              String   @id @default(cuid())
+  roomCode        String   @unique
+  hostId          String?
+  isPrivate       Boolean  @default(true)
+  allowSpectators Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  host            User?    @relation("HostedRooms", fields: [hostId], references: [id], onDelete: SetNull)
+
+  @@index([roomCode])
+  @@index([createdAt])
+}
+
+model GameHistory {
+  id          String   @id @default(cuid())
+  matchId     String   @unique
+  roomCode    String
+  winnerId    String?
+  winnerName  String
+  playerCount Int
+  rounds      Int
+  startedAt   DateTime
+  endedAt     DateTime @default(now())
+
+  winner      User?    @relation("WonGames", fields: [winnerId], references: [id], onDelete: SetNull)
+
+  @@index([roomCode])
+  @@index([endedAt])
+}

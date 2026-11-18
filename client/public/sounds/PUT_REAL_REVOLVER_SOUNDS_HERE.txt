@@ -1,0 +1,5 @@
+วางไฟล์เสียงปืนลูกโม่จริง (.mp3) ในโฟลเดอร์นี้ได้ทันที:
+- revolver-spin.mp3
+- revolver-cock.mp3
+- revolver-dry.mp3
+- revolver-fire.mp3
